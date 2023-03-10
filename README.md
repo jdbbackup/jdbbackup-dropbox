@@ -3,7 +3,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=jdbbackup_jdbbackupp-dropbox&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=jdbbackupp_jdbbackupp-dropbox)
 [![javadoc](https://javadoc.io/badge2/com.fathzer/jdbbackupp-dropbox/javadoc.svg)](https://javadoc.io/doc/com.fathzer/jdbbackupp-dropbox)
 
-# jdbbackupp-dropbox
+# jdbbackup-dropbox
 A [jdbbackupp](https://github.com/jdbbackupp) DestinationManager implementation that uses Dropbox as underlying storage provider.
 
 It requires java 11+.
