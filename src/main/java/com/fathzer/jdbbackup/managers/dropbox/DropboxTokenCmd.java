@@ -13,20 +13,27 @@ import com.fathzer.jdbbackup.cmd.ProxySettingsConverter;
 import com.fathzer.jdbbackup.utils.ProxySettings;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
-/** A helper class to obtain a token usable with DropBoxManager
+/** A helper class to obtain a token usable with DropBoxManager.
+ * <br>Run this class with -h argument to know available options.
  */
-public class DropBoxTokenCmd extends DropBoxBase implements Callable<Integer>, CommandLineSupport {
-	//FIXME Warning: can't use this directly from jar file because, at least, CommandLineSupport will not be in shaded jar
-	//Maybe we should split jdbbackup-core in two library, with a utility one that could be included in the uber jar ... 
+@Command(name = "java com.fathzer.jdbbackup.managers.dropbox.DropBoxTokenCmd", usageHelpAutoWidth = true, description = {"Gets a token from Dropbox.","You will need a web browser to complete the process"})
+public class DropboxTokenCmd extends DropboxBase implements Callable<Integer>, CommandLineSupport {
 	@Option(names={"-p","--proxy"}, description="The proxy used to communicate with Dropbox, format is [user[:pwd]@]host:port", converter = ProxySettingsConverter.class)
 	private ProxySettings proxy;
+	@Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message")
+	boolean usageHelpRequested;
 	
+	/** Launches the command.
+	 * @param args The command arguments. Run the class with -h arguments to know available options.
+	 */
 	public static void main(String... args) {
-		System.exit(new CommandLine(new DropBoxTokenCmd()).execute(args));
+		System.exit(new CommandLine(new DropboxTokenCmd()).execute(args));
     }
 
+	@Override
 	public Integer call() throws Exception {
 		setProxy(proxy);
 		getToken();

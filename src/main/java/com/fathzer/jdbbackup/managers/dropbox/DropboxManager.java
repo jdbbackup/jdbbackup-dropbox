@@ -19,9 +19,9 @@ import com.fathzer.jdbbackup.DestinationManager;
 /** A destination manager that saves the backups to a dropbox account.
  * <br>Destination paths have the following format dropbox://<i>token</i>/<i>filePath</i>
  */
-public class DropBoxManager extends DropBoxBase implements DestinationManager<DropBoxManager.DropBoxDestination> {
+public class DropboxManager extends DropboxBase implements DestinationManager<DropboxManager.DropboxDestination> {
 
-	static class DropBoxDestination {
+	static class DropboxDestination {
 		private String token;
 		private String path;
 		
@@ -35,12 +35,12 @@ public class DropBoxManager extends DropBoxBase implements DestinationManager<Dr
 	
 	/** Constructor.
 	 */
-	public DropBoxManager() {
+	public DropboxManager() {
 		super();
 	}
 
 	@Override
-	public String send(final InputStream in, long size, DropBoxDestination dest) throws IOException {
+	public String send(final InputStream in, long size, DropboxDestination dest) throws IOException {
 		DbxClientV2 client = new DbxClientV2(getConfig(), getCredential(dest.token));
 		UploadBuilder builder = client.files().uploadBuilder(dest.path);
 		builder.withMode(WriteMode.OVERWRITE);
@@ -62,12 +62,12 @@ public class DropBoxManager extends DropBoxBase implements DestinationManager<Dr
 	}
 	
 	@Override
-	public DropBoxDestination validate(final String fileName, Function<String,CharSequence> extensionBuilder) {
+	public DropboxDestination validate(final String fileName, Function<String,CharSequence> extensionBuilder) {
 		int index = fileName.indexOf(URI_PATH_SEPARATOR);
 		if (index<=0) {
 			throw new IllegalArgumentException("Unable to locate token. "+"FileName should conform to the format access_token/path");
 		}
-		DropBoxDestination dest = new DropBoxDestination();
+		DropboxDestination dest = new DropboxDestination();
 		dest.token = fileName.substring(0, index);
 		dest.path = fileName.substring(index+1);
 		if (dest.path.isEmpty()) {

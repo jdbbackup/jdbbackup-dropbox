@@ -16,16 +16,16 @@ import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadBuilder;
 import com.dropbox.core.v2.files.WriteMode;
-import com.fathzer.jdbbackup.managers.dropbox.DropBoxManager.DropBoxDestination;
+import com.fathzer.jdbbackup.managers.dropbox.DropboxManager.DropboxDestination;
 import com.fathzer.jdbbackup.utils.BasicExtensionBuilder;
 
 class DropboxManagerTest {
 
 	@Test
 	void test() throws IOException, DbxException {
-		final DropBoxManager manager = new DropBoxManager();
+		final DropboxManager manager = new DropboxManager();
 		try (MockedConstruction<Date> mock = mockConstruction(Date.class)) {
-			DropBoxDestination path = manager.validate("token/a/{d=MMyy}", BasicExtensionBuilder.INSTANCE);
+			DropboxDestination path = manager.validate("token/a/{d=MMyy}", BasicExtensionBuilder.INSTANCE);
 			assertEquals("token", path.getToken());
 			assertEquals("/a/0170.sql.gz", path.getPath());
 		}
@@ -38,7 +38,7 @@ class DropboxManagerTest {
 		when(up.uploadAndFinish(null,0)).thenReturn(data);
 		final DbxUserFilesRequests files = mock(DbxUserFilesRequests.class);
 		when(files.uploadBuilder("/file")).thenReturn(up);
-		DropBoxDestination dest = manager.validate("token/file", s->s);
+		DropboxDestination dest = manager.validate("token/file", s->s);
 		try (MockedConstruction<DbxClientV2> mock = mockConstruction(DbxClientV2.class, (client, context) -> {
 			when(client.files()).thenReturn(files);
 		})) {
@@ -49,7 +49,7 @@ class DropboxManagerTest {
 
 	@Test
 	void testCredentials() {
-		DropBoxManager manager = new DropBoxManager();
+		DropboxManager manager = new DropboxManager();
 		{
 			final DbxCredential credential = manager.getCredential("token");
 			assertAll(
@@ -59,7 +59,7 @@ class DropboxManagerTest {
 				);
 		}
 		{
-			final DbxCredential credential = manager.getCredential(DropBoxBase.REFRESH_PREFIX+"token");
+			final DbxCredential credential = manager.getCredential(DropboxBase.REFRESH_PREFIX+"token");
 			assertAll(
 				() -> assertTrue(credential.aboutToExpire()),
 				() -> assertEquals("token",credential.getRefreshToken())

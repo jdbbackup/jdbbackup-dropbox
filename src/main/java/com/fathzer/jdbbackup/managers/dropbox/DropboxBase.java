@@ -18,9 +18,10 @@ import com.dropbox.core.http.StandardHttpRequestor;
 import com.dropbox.core.http.StandardHttpRequestor.Config;
 import com.fathzer.jdbbackup.utils.ProxySettings;
 
-/** Common component between {@link com.fathzer.jdbbackup.managers.dropbox.DropBoxManager} and {@link com.fathzer.jdbbackup.managers.dropbox.DropBoxTokenCmd}
+/** Common component between {@link com.fathzer.jdbbackup.managers.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.managers.dropbox.DropboxTokenCmd}
  */
-public class DropBoxBase {
+public class DropboxBase {
+	/** A prefix that distinguish refresh tokens from legacy eternal access tokens. */
 	protected static final String REFRESH_PREFIX = "refresh-";
 	private static final String NAME = "jDbBackup";
 
@@ -28,7 +29,7 @@ public class DropBoxBase {
 	 * <i>appKey</i> and <i>appSecret</i> keys.
 	 */
 	public static final Function<String,DbxAppInfo> RESOURCE_PROPERTY_APP_INFO_BUILDER = resName -> {
-		try (InputStream in = DropBoxBase.class.getResourceAsStream(resName)) {
+		try (InputStream in = DropboxBase.class.getResourceAsStream(resName)) {
 			final Properties properties = new Properties();
 			properties.load(in);
 			String key = getKey(properties,resName, "appKey");
@@ -60,7 +61,7 @@ public class DropBoxBase {
 		return this.proxySettings;
 	}
 	
-	protected DbxAppInfo getAppInfo() {
+	DbxAppInfo getAppInfo() {
 		return dbxAppInfoProvider.get();
 	}
 	
@@ -91,7 +92,7 @@ public class DropBoxBase {
 	 * <br>By default, the library uses the jdbbackup application's credential stored in keys.properties resource file.
 	 * <br>You can switch to another application of your choice by passing another supplier to this method.
 	 * @param dbxAppInfoProvider The new application credentials supplier
-	 * @see DropBoxBase#RESOURCE_PROPERTY_APP_INFO_BUILDER
+	 * @see DropboxBase#RESOURCE_PROPERTY_APP_INFO_BUILDER
 	 */
 	public void setDbxAppInfoSupplier(Supplier<DbxAppInfo> dbxAppInfoProvider) {
 		this.dbxAppInfoProvider = dbxAppInfoProvider;
