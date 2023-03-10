@@ -9,11 +9,11 @@ A [jdbbackupp](https://github.com/jdbbackupp) DestinationManager implementation 
 It requires java 11+.
 
 ## How to get a Dropbox Token
-This library jar contains a main class that will provide you with a token. It requires the [jdbbackup-cli] jar to run.
+This library jar contains a main class that will provide you with a token. It requires the [jdbbackup-cli](https://github.com/jdbbackup/jdbbackup-cli) jar to run.
 
-Here is how to launch it:  
+Here is how to launch it (on windows, replace : by ;):  
 ```
-java -cp *path*/jdbbackup-dropbox-1.0.0.jar;*path*/jdbbackup-cli-1.0.0.jar com.fathzer.jdbbackup.managers.dropbox.DropboxTokenCmd
+java -cp path/jdbbackup-dropbox-1.0.0.jar:path/jdbbackup-cli-1.0.0.jar com.fathzer.jdbbackup.managers.dropbox.DropboxTokenCmd
 ```
 
-Use the -h argument
+Use the -h argument to know available command arguments.
