@@ -89,7 +89,7 @@ public class DropboxManager extends DropboxBase implements DestinationManager<Dr
 	}
 
 	@Override
-	public String getProtocol() {
+	public String getScheme() {
 		return "dropbox";
 	}
 }
