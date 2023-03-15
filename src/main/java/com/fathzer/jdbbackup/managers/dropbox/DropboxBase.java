@@ -52,11 +52,18 @@ public class DropboxBase {
 	private ProxySettings proxySettings;
 	private Supplier<DbxAppInfo> dbxAppInfoProvider = () -> RESOURCE_PROPERTY_APP_INFO_BUILDER.apply("keys.properties");
 
-	public void setProxy(final ProxySettings options) {
-		this.proxySettings = options;
+	/** Sets the proxy settings to be used by the Dropbox API.
+	 * @param settings The proxy settings
+	 */
+	public void setProxy(final ProxySettings settings) {
+		this.proxySettings = settings;
 		this.config = null;
 	}
 	
+	/** Gets the current proxy settings
+	 * @return The proxy settings or null if no proxy is set.
+	 * @see #setProxy(ProxySettings)
+	 */
 	protected ProxySettings getProxySettings() {
 		return this.proxySettings;
 	}
@@ -65,6 +72,11 @@ public class DropboxBase {
 		return dbxAppInfoProvider.get();
 	}
 	
+	/** Gets the Dropbox request configuration.
+	 * <br>This implementation return a configuration that uses the standard http requestor, with, the proxy settings applied.
+	 * <br>You can override this method to build a configuration on other bases. 
+	 * @return a {@link DbxRequestConfig} instance
+	 */
 	protected DbxRequestConfig getConfig() {
 		if (config==null) {
 			Config.Builder builder = Config.builder();
