@@ -9,7 +9,6 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.oauth.DbxCredential;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.CommitInfo;
-import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadBuilder;
 import com.dropbox.core.v2.files.WriteMode;
 
@@ -40,13 +39,12 @@ public class DropboxManager extends DropboxBase implements DestinationManager<Dr
 	}
 
 	@Override
-	public String send(final InputStream in, long size, DropboxDestination dest) throws IOException {
+	public void send(final InputStream in, long size, DropboxDestination dest) throws IOException {
 		DbxClientV2 client = new DbxClientV2(getConfig(), getCredential(dest.token));
 		UploadBuilder builder = client.files().uploadBuilder(dest.path);
 		builder.withMode(WriteMode.OVERWRITE);
 		try {
-			FileMetadata data = builder.uploadAndFinish(in, size);
-			return "Sent to Dropbox: "+data.getPathDisplay()+" (rev: "+data.getRev()+")";
+			builder.uploadAndFinish(in, size);
 		} catch (DbxException e) {
 			throw new IOException(e);
 		}
