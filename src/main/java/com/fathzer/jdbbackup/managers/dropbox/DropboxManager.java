@@ -60,8 +60,9 @@ public class DropboxManager extends DropboxBase implements DestinationManager<Dr
 	}
 	
 	@Override
-	public DropboxDestination validate(final String fileName, Function<String,CharSequence> extensionBuilder) {
-		int index = fileName.indexOf(URI_PATH_SEPARATOR);
+	public DropboxDestination validate(String fileName, Function<String,CharSequence> extensionBuilder) {
+		fileName = DefaultPathDecoder.INSTANCE.decodePath(fileName);
+		final int index = fileName.indexOf(URI_PATH_SEPARATOR);
 		if (index<=0) {
 			throw new IllegalArgumentException("Unable to locate token. "+"FileName should conform to the format access_token/path");
 		}
@@ -71,7 +72,7 @@ public class DropboxManager extends DropboxBase implements DestinationManager<Dr
 		if (dest.path.isEmpty()) {
 			throw new IllegalArgumentException("Unable to locate destination path. Path should conform to the format access_token/path");
 		}
-		dest.path = DefaultPathDecoder.INSTANCE.decodePath(dest.path, extensionBuilder);
+		dest.path = extensionBuilder.apply(dest.path).toString();
 		if (dest.path.charAt(0)!=URI_PATH_SEPARATOR) {
 			// Dropbox requires path that starts with a /
 			dest.path = URI_PATH_SEPARATOR+dest.path;

@@ -4,9 +4,14 @@
 [![javadoc](https://javadoc.io/badge2/com.fathzer/jdbbackupp-dropbox/javadoc.svg)](https://javadoc.io/doc/com.fathzer/jdbbackupp-dropbox)
 
 # jdbbackup-dropbox
-A [jdbbackupp](https://github.com/jdbbackupp) DestinationManager implementation that uses Dropbox as underlying storage provider.
+A [JDBBackupp](https://github.com/jdbbackup/jdbbackup-core) DestinationManager implementation that uses Dropbox as underlying storage provider.
 
 It requires java 11+.
+
+## Destination format
+dropbox://*token*/*filePath*
+
+All the patterns detailed [here](https://github.com/jdbbackup/jdbbackup-core) are supported.
 
 ## How to get a Dropbox Token
 This library jar contains a main class that will provide you with a token. It requires the [jdbbackup-cli](https://github.com/jdbbackup/jdbbackup-cli) jar to run.
