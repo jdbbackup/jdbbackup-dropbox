@@ -1,4 +1,4 @@
-package com.fathzer.jdbbackup.managers.dropbox;
+package com.fathzer.jdbbackup.destinations.dropbox;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -16,7 +16,8 @@ import com.dropbox.core.v2.files.DbxUserFilesRequests;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.UploadBuilder;
 import com.dropbox.core.v2.files.WriteMode;
-import com.fathzer.jdbbackup.managers.dropbox.DropboxManager.DropboxDestination;
+import com.fathzer.jdbbackup.ProxyCompliant;
+import com.fathzer.jdbbackup.destinations.dropbox.DropboxManager.DropboxDestination;
 import com.fathzer.jdbbackup.utils.BasicExtensionBuilder;
 
 class DropboxManagerTest {
@@ -24,6 +25,7 @@ class DropboxManagerTest {
 	@Test
 	void test() throws IOException, DbxException {
 		final DropboxManager manager = new DropboxManager();
+		assertTrue(manager instanceof ProxyCompliant);
 		try (MockedConstruction<Date> mock = mockConstruction(Date.class)) {
 			DropboxDestination path = manager.validate("token/a/{d=MMyy}", BasicExtensionBuilder.INSTANCE);
 			assertEquals("token", path.getToken());

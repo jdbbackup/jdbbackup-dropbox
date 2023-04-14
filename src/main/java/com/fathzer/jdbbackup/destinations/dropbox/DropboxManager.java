@@ -1,4 +1,4 @@
-package com.fathzer.jdbbackup.managers.dropbox;
+package com.fathzer.jdbbackup.destinations.dropbox;
 
 import java.io.IOException;
 import java.io.InputStream;

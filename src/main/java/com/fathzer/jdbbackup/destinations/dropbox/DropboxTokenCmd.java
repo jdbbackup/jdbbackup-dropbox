@@ -1,4 +1,4 @@
-package com.fathzer.jdbbackup.managers.dropbox;
+package com.fathzer.jdbbackup.destinations.dropbox;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -10,7 +10,7 @@ import com.dropbox.core.DbxWebAuth;
 import com.dropbox.core.TokenAccessType;
 import com.fathzer.jdbbackup.cmd.CommandLineSupport;
 import com.fathzer.jdbbackup.cmd.ProxySettingsConverter;
-import com.fathzer.jdbbackup.utils.ProxySettings;
+import com.fathzer.plugin.loader.utils.ProxySettings;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -19,7 +19,7 @@ import picocli.CommandLine.Option;
 /** A helper class to obtain a token usable with DropBoxManager.
  * <br>Run this class with -h argument to know available options.
  */
-@Command(name = "java com.fathzer.jdbbackup.managers.dropbox.DropBoxTokenCmd", usageHelpAutoWidth = true, description = {"Gets a token from Dropbox.","You will need a web browser to complete the process"})
+@Command(name = "java com.fathzer.jdbbackup.destinations.dropbox.DropBoxTokenCmd", usageHelpAutoWidth = true, description = {"Gets a token from Dropbox.","You will need a web browser to complete the process"})
 public class DropboxTokenCmd extends DropboxBase implements Callable<Integer>, CommandLineSupport {
 	@Option(names={"-p","--proxy"}, description="The proxy used to communicate with Dropbox, format is [user[:pwd]@]host:port", converter = ProxySettingsConverter.class)
 	private ProxySettings proxy;
@@ -35,7 +35,9 @@ public class DropboxTokenCmd extends DropboxBase implements Callable<Integer>, C
 
 	@Override
 	public Integer call() throws Exception {
-		setProxy(proxy);
+		if (proxy!=null) {
+			setProxy(proxy.toProxy(), proxy.getLogin());
+		}
 		getToken();
 		return 0;
 	}

@@ -18,7 +18,7 @@ This library jar contains a main class that will provide you with a token. It re
 
 Here is how to launch it (on windows, replace : by ;):  
 ```
-java -cp path/jdbbackup-dropbox-1.0.0.jar:path/jdbbackup-cli-1.0.0.jar com.fathzer.jdbbackup.managers.dropbox.DropboxTokenCmd
+java -cp path/jdbbackup-dropbox-1.0.0.jar:path/jdbbackup-cli-1.0.0.jar com.fathzer.jdbbackup.destinations.dropbox.DropboxTokenCmd
 ```
 
 Use the -h argument to know available command arguments.

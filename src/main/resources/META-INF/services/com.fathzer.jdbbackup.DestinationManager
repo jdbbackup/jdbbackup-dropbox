@@ -1,1 +1,1 @@
-com.fathzer.jdbbackup.managers.dropbox.DropboxManager
+com.fathzer.jdbbackup.destinations.dropbox.DropboxManager

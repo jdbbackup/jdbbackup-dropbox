@@ -1,10 +1,9 @@
-package com.fathzer.jdbbackup.managers.dropbox;
+package com.fathzer.jdbbackup.destinations.dropbox;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.net.Authenticator;
-import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.MissingResourceException;
@@ -16,11 +15,11 @@ import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.http.StandardHttpRequestor;
 import com.dropbox.core.http.StandardHttpRequestor.Config;
-import com.fathzer.jdbbackup.utils.ProxySettings;
+import com.fathzer.jdbbackup.ProxyCompliant;
 
-/** Common component between {@link com.fathzer.jdbbackup.managers.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.managers.dropbox.DropboxTokenCmd}
+/** Common component between {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxTokenCmd}
  */
-public class DropboxBase {
+public class DropboxBase implements ProxyCompliant {
 	/** A prefix that distinguish refresh tokens from legacy eternal access tokens. */
 	protected static final String REFRESH_PREFIX = "refresh-";
 	private static final String NAME = "jDbBackup";
@@ -30,6 +29,9 @@ public class DropboxBase {
 	 */
 	public static final Function<String,DbxAppInfo> RESOURCE_PROPERTY_APP_INFO_BUILDER = resName -> {
 		try (InputStream in = DropboxBase.class.getResourceAsStream(resName)) {
+			if (in==null) {
+				throw new IOException("Unable to find "+resName+" resource");
+			}
 			final Properties properties = new Properties();
 			properties.load(in);
 			String key = getKey(properties,resName, "appKey");
@@ -49,23 +51,32 @@ public class DropboxBase {
 	}
 	
 	private DbxRequestConfig config;
-	private ProxySettings proxySettings;
+	private Proxy proxy = Proxy.NO_PROXY;
+	private PasswordAuthentication proxyAuth;
 	private Supplier<DbxAppInfo> dbxAppInfoProvider = () -> RESOURCE_PROPERTY_APP_INFO_BUILDER.apply("keys.properties");
 
-	/** Sets the proxy settings to be used by the Dropbox API.
-	 * @param settings The proxy settings
-	 */
-	public void setProxy(final ProxySettings settings) {
-		this.proxySettings = settings;
+	@Override
+	public void setProxy(Proxy proxy, PasswordAuthentication auth) {
+		ProxyCompliant.super.setProxy(proxy, auth);
+		this.proxy = proxy;
+		this.proxyAuth = auth;
 		this.config = null;
 	}
 	
-	/** Gets the current proxy settings
-	 * @return The proxy settings or null if no proxy is set.
-	 * @see #setProxy(ProxySettings)
+	/** Gets the current proxy
+	 * @return The proxy or Proxy.NO_PROXY if no proxy is set.
+	 * @see #setProxy(Proxy, PasswordAuthentication)
 	 */
-	protected ProxySettings getProxySettings() {
-		return this.proxySettings;
+	protected Proxy getProxy() {
+		return this.proxy;
+	}
+	
+	/** Gets the current proxy authentication
+	 * @return The proxy authentication or null if no proxy authentication is set.
+	 * @see #setProxy(Proxy, PasswordAuthentication)
+	 */
+	protected PasswordAuthentication getProxyAuthentication() {
+		return this.proxyAuth;
 	}
 	
 	DbxAppInfo getAppInfo() {
@@ -80,13 +91,12 @@ public class DropboxBase {
 	protected DbxRequestConfig getConfig() {
 		if (config==null) {
 			Config.Builder builder = Config.builder();
-			if (proxySettings!=null && proxySettings.getHost()!=null) {
-				Proxy proxy = new Proxy(Proxy.Type.HTTP,new InetSocketAddress(proxySettings.getHost(),proxySettings.getPort()));
-				if (proxySettings.getLogin() != null) {
+			if (!Proxy.NO_PROXY.equals(proxy)) {
+				if (proxyAuth != null) {
 					Authenticator.setDefault(new Authenticator() {
 						@Override
 						protected PasswordAuthentication getPasswordAuthentication() {
-							return proxySettings.getLogin();
+							return proxyAuth;
 						}
 					});
 				}
