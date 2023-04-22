@@ -2,13 +2,18 @@ package com.fathzer.jdbbackup.destinations.dropbox;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.PasswordAuthentication;
+import java.net.Proxy;
+import java.net.Proxy.Type;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.Callable;
 
 import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxWebAuth;
 import com.dropbox.core.TokenAccessType;
-import com.fathzer.plugin.loader.utils.ProxySettings;
 
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
@@ -25,7 +30,36 @@ public class DropboxTokenCmd extends DropboxBase implements Callable<Integer> {
 	private static class ProxySettingsConverter implements ITypeConverter<ProxySettings> {
 		@Override
 		public ProxySettings convert(String value) throws Exception {
-			return ProxySettings.fromString(value);
+			return new ProxySettings(value);
+		}
+	}
+	
+	private static class ProxySettings {
+		private final Proxy proxy;
+		private final PasswordAuthentication login;
+		
+		private ProxySettings(String proxy) {
+			try {
+				final URI uri = new URI("http://"+proxy);
+				final String host = uri.getHost();
+				if (host==null) {
+					throw new IllegalArgumentException("missing host");
+				}
+				final int port = uri.getPort();
+				if (port<=0) {
+					throw new IllegalArgumentException("missing port");
+				}
+				this.proxy = new Proxy(Type.HTTP, new InetSocketAddress(host, port));
+				final String userAndPwd = uri.getUserInfo();
+				if (userAndPwd!=null && !userAndPwd.trim().isEmpty()) {
+					final int index = userAndPwd.indexOf(':');
+					this.login = index<0 ? new PasswordAuthentication(userAndPwd, new char[0]) : new PasswordAuthentication(userAndPwd.substring(0,index), userAndPwd.substring(index+1).toCharArray());
+				} else {
+					this.login = null;
+				}
+			} catch (URISyntaxException e) {
+				throw new IllegalArgumentException("argument should be of the form [user:pwd@]host:port",e);
+			}
 		}
 	}
 	
@@ -75,7 +109,7 @@ public class DropboxTokenCmd extends DropboxBase implements Callable<Integer> {
 	@Override
 	public Integer call() throws Exception {
 		if (proxy!=null) {
-			setProxy(proxy.toProxy(), proxy.getLogin());
+			setProxy(proxy.proxy, proxy.login);
 		}
 		getToken();
 		return 0;

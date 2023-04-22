@@ -14,11 +14,11 @@ dropbox://*token*/*filePath*
 All the patterns detailed [here](https://github.com/jdbbackup/jdbbackup-core) are supported.
 
 ## How to get a Dropbox Token
-This library jar contains a main class that will provide you with a token. It requires the [jdbbackup-cli](https://github.com/jdbbackup/jdbbackup-cli) jar to run.
+This library jar contains a main class that will provide you with a token.
 
-Here is how to launch it (on windows, replace : by ;):  
+Here is how to launch it:  
 ```
-java -cp path/jdbbackup-dropbox-1.0.0.jar:path/jdbbackup-cli-1.0.0.jar com.fathzer.jdbbackup.destinations.dropbox.DropboxTokenCmd
+java -jar jdbbackup-dropbox-1.0.0.jar
 ```
 
 Use the -h argument to know available command arguments.

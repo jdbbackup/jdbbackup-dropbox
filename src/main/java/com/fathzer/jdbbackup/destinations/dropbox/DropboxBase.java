@@ -15,11 +15,12 @@ import com.dropbox.core.DbxAppInfo;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.http.StandardHttpRequestor;
 import com.dropbox.core.http.StandardHttpRequestor.Config;
-import com.fathzer.jdbbackup.ProxyCompliant;
 
 /** Common component between {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxTokenCmd}
  */
-public class DropboxBase implements ProxyCompliant {
+public class DropboxBase {
+	// Please note this class does not implement ProxyCompliant to break the runtime dependency to jdbbackup-core
+	// This allows DropboxTokenCmd to be executed directly from the jar
 	/** A prefix that distinguish refresh tokens from legacy eternal access tokens. */
 	protected static final String REFRESH_PREFIX = "refresh-";
 	private static final String NAME = "jDbBackup";
@@ -55,9 +56,18 @@ public class DropboxBase implements ProxyCompliant {
 	private PasswordAuthentication proxyAuth;
 	private Supplier<DbxAppInfo> dbxAppInfoProvider = () -> RESOURCE_PROPERTY_APP_INFO_BUILDER.apply("keys.properties");
 
-	@Override
+	/** Sets the proxy.
+	 * @param proxy The proxy to use to connect to destination ({@link Proxy#NO_PROXY} for disabling proxy).
+	 * @param auth The proxy authentication (null if the proxy does not require authentication).
+	 * @throws IllegalArgumentException if proxy is null or if auth is not null and proxy is {@link Proxy#NO_PROXY}.
+	 */
 	public void setProxy(Proxy proxy, PasswordAuthentication auth) {
-		ProxyCompliant.super.setProxy(proxy, auth);
+		if (proxy==null) {
+			throw new IllegalArgumentException("Use Proxy.NO_PROXY instead of null");
+		}
+		if (Proxy.NO_PROXY.equals(proxy) && auth!=null) {
+			throw new IllegalArgumentException("Can't set no proxy with login");
+		}
 		this.proxy = proxy;
 		this.proxyAuth = auth;
 		this.config = null;

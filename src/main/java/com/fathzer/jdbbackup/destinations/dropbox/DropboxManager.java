@@ -14,11 +14,12 @@ import com.dropbox.core.v2.files.WriteMode;
 
 import com.fathzer.jdbbackup.DefaultPathDecoder;
 import com.fathzer.jdbbackup.DestinationManager;
+import com.fathzer.jdbbackup.ProxyCompliant;
 
 /** A destination manager that saves the backups to a dropbox account.
  * <br>Destination paths have the following format dropbox://<i>token</i>/<i>filePath</i>
  */
-public class DropboxManager extends DropboxBase implements DestinationManager<DropboxManager.DropboxDestination> {
+public class DropboxManager extends DropboxBase implements DestinationManager<DropboxManager.DropboxDestination>, ProxyCompliant {
 
 	static class DropboxDestination {
 		private String token;
