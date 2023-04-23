@@ -19,6 +19,7 @@ import com.dropbox.core.DbxAuthFinish;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxWebAuth;
 import com.fathzer.jdbbackup.destinations.dropbox.DropboxBase;
+import com.fathzer.jdbbackup.destinations.dropbox.token.DropboxTokenCmd.ProxySettingsConverter;
 
 import picocli.CommandLine.ExitCode;
 
@@ -78,7 +79,7 @@ class DropboxTokenCmdTest {
 		
 		// Test with proxy
 		cmd.setConsole(new Silent(null));
-		cmd.proxy = new ProxySettings("host:4321");
+		cmd.proxy = new ProxySettingsConverter().convert("host:4321");
 		assertEquals(0, cmd.call());
 		assertEquals(new InetSocketAddress("host", 4321), ((Proxy) proxyField.get(cmd)).address());
 		PasswordAuthentication auth = (PasswordAuthentication) proxyLoginField.get(cmd);
@@ -98,6 +99,19 @@ class DropboxTokenCmdTest {
 		assertEquals(Proxy.NO_PROXY, (Proxy) proxyField.get(cmd));
 		assertNull(proxyLoginField.get(cmd));
 	}
+	
+	@Test
+	void testIllegalProxySettings() {
+		// Illegal arguments
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("host"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("host:3128:11"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("host:xxx"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("u:p@:3128"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("u:p@myHost{1}:3128"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("a.1c:3128"));
+		assertThrows(IllegalArgumentException.class, () -> new ProxySettings("http://a.1c:3128/"));
+	}
+
 	
 	@Test
 	void testGetToken() throws Exception {

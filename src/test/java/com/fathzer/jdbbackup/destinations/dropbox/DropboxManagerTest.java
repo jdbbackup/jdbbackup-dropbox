@@ -26,6 +26,7 @@ class DropboxManagerTest {
 	void test() throws IOException, DbxException {
 		final DropboxManager manager = new DropboxManager();
 		assertTrue(manager instanceof ProxyCompliant);
+		assertEquals("dropbox", manager.getScheme());
 		try (MockedConstruction<Date> mock = mockConstruction(Date.class)) {
 			DropboxDestination path = manager.validate("token/a/{d=MMyy}", BasicExtensionBuilder.INSTANCE);
 			assertEquals("token", path.getToken());
