@@ -16,7 +16,7 @@ import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.http.StandardHttpRequestor;
 import com.dropbox.core.http.StandardHttpRequestor.Config;
 
-/** Common component between {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxTokenCmd}
+/** Common component between {@link com.fathzer.jdbbackup.destinations.dropbox.DropboxManager} and {@link com.fathzer.jdbbackup.destinations.dropbox.token.DropboxTokenCmd}
  */
 public class DropboxBase {
 	// Please note this class does not implement ProxyCompliant to break the runtime dependency to jdbbackup-core
@@ -89,7 +89,7 @@ public class DropboxBase {
 		return this.proxyAuth;
 	}
 	
-	DbxAppInfo getAppInfo() {
+	protected DbxAppInfo getAppInfo() {
 		return dbxAppInfoProvider.get();
 	}
 	
