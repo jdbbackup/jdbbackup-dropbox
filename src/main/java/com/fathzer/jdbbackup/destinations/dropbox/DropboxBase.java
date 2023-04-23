@@ -89,6 +89,9 @@ public class DropboxBase {
 		return this.proxyAuth;
 	}
 	
+	/** Gets the Dropbox application identification information.
+	 * @return a DbxAppInfo instance
+	 */
 	protected DbxAppInfo getAppInfo() {
 		return dbxAppInfoProvider.get();
 	}

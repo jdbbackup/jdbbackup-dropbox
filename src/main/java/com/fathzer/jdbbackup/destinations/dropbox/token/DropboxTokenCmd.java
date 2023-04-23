@@ -35,6 +35,8 @@ public class DropboxTokenCmd extends DropboxBase implements Callable<Integer> {
 	@Option(names = {"-h", "--help"}, usageHelp = true, description = "Display this help message")
 	private boolean usageHelpRequested;
 	
+	/** The console used by the command for its input/output
+	 */
 	protected Console console = new Console() {};
 	
 	/** Launches the command.

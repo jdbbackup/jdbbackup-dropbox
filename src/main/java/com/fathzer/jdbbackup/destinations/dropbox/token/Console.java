@@ -32,6 +32,9 @@ public interface Console {
 		e.printStackTrace();
 	}
 
+	/** Waits for a new input line and return it.
+	 * @return a String
+	 */
 	default String getCommand() {
 		try {
 			return new BufferedReader(new InputStreamReader(System.in)).readLine().trim();
